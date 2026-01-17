@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2026 Budget Planner</title>
+
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Chart.js UMD -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+    <!-- Sortable.js -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>2026 Family Budget Planner</h1>
+
+        <!-- Family Members -->
+        <section id="family-members">
+            <h2>Family Members</h2>
+            <p>Add people in your household. Drag to reorder.</p>
+            <div class="family-input">
+                <input type="text" id="new-member-name" placeholder="Name" />
+                <button onclick="addFamilyMember()">Add Member</button>
+            </div>
+            <ul id="family-list" class="family-list"></ul>
+        </section>
+
+        <!-- Incomes (Dynamic) -->
+        <section id="incomes">
+            <h2>Incomes</h2>
+            <p>Enter monthly income for each family member.</p>
+            <div id="income-inputs" class="income-inputs"></div>
+            <p>Total Monthly Income: $<span id="total-income">0.00</span></p>
+        </section>
+
+        <!-- Expenses -->
+        <section id="expenses">
+            <h2>Expenses</h2>
+
+            <div class="expense-input">
+                <input type="text" id="expense-desc" placeholder="Description" />
+                <input type="number" id="expense-amount" placeholder="Amount" step="0.01" />
+
+                <select id="expense-category">
+                    <option value="">Category</option>
+                    <option value="Bills">Bills</option>
+                    <option value="Subscriptions">Subscriptions</option>
+                    <option value="Necessities">Necessities</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <select id="expense-owner">
+                    <option value="">For whom?</option>
+                    <!-- Filled dynamically -->
+                </select>
+
+                <button onclick="addExpense()">Add Expense</button>
+            </div>
+
+            <table id="expense-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Amount ($)</th>
+                        <th>Category</th>
+                        <th>For</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="expense-list"></tbody>
+            </table>
+
+            <p>Total Expenses: $<span id="total-expenses">0.00</span></p>
+        </section>
+
+        <!-- Visualizations -->
+        <section id="visualization">
+            <h2>Expense Breakdown</h2>
+            <div class="charts-wrapper">
+                <div class="chart-container">
+                    <h3>By Category (All)</h3>
+                    <canvas id="categoryPieChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Shared vs Personal</h3>
+                    <canvas id="ownerPieChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Savings Goals -->
+        <section id="goals">
+            <h2>Savings Goals</h2>
+
+            <div class="goal-input">
+                <input type="text" id="goal-name" placeholder="Goal name" />
+                <input type="number" id="goal-amount" placeholder="Total needed ($)" step="0.01" />
+                <input type="number" id="goal-already-saved" placeholder="Already saved ($)" step="0.01" />
+                <label>Target date: <input type="date" id="goal-target-date" /></label>
+
+                <select id="goal-alloc-mode">
+                    <option value="percent">% of disposable</option>
+                    <option value="fixed">$ / month</option>
+                </select>
+                <input type="number" id="goal-alloc-value" placeholder="Allocation value" step="0.01" />
+
+                <button onclick="addGoal()">Add Goal</button>
+            </div>
+
+            <p id="new-goal-recommended" class="goal-recommended"></p>
+
+            <ul id="goal-list"></ul>
+        </section>
+
+        <!-- Investments -->
+        <section id="investments">
+            <h2>Investments</h2>
+            <p>Model recurring contributions with estimated compound growth.</p>
+
+            <div class="investment-input">
+                <input type="text" id="inv-name" placeholder="Investment name" />
+                <input type="number" id="inv-monthly" placeholder="$ / month" step="0.01" />
+                <input type="number" id="inv-years" placeholder="Years" />
+                <input type="number" id="inv-rate" placeholder="Est. % return" step="0.01" />
+                <button onclick="addInvestment()">Add Investment</button>
+            </div>
+
+            <ul id="investment-list"></ul>
+        </section>
+
+        <!-- Allocations (non-goal buckets) -->
+        <section id="allocations">
+            <h2>Allocations</h2>
+            <p>Create monthly buckets like Dining Out, Fun Money, etc. These are computed from Disposable income.</p>
+
+            <div class="allocation-input">
+                <input type="text" id="alloc-name" placeholder="Allocation name" />
+                <select id="alloc-mode">
+                    <option value="percent">% of disposable</option>
+                    <option value="fixed">$ / month</option>
+                </select>
+                <input type="number" id="alloc-value" placeholder="Value" step="0.01" />
+                <button onclick="addAllocation()">Add Allocation</button>
+            </div>
+
+            <table class="alloc-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Value</th>
+                        <th>Monthly $</th>
+                        <th>%</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="allocation-list"></tbody>
+            </table>
+
+            <div class="allocation-chart-wrap">
+                <h3>Disposable Allocation Breakdown</h3>
+                <div class="allocation-chart-container">
+                    <canvas id="allocationChart"></canvas>
+                </div>
+
+                <!-- Grouped legend (Goals / Investments / Allocations) -->
+                <div id="allocation-legend" class="allocation-legend"></div>
+
+                <p id="allocation-chart-note" class="chart-note"></p>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section id="summary">
+            <h2>Summary</h2>
+            <p>Disposable Monthly Income: $<span id="disposable">0.00</span></p>
+            <p>Total Allocated: $<span id="total-allocated">0.00</span></p>
+            <p>Remaining: $<span id="remaining">0.00</span></p>
+
+            <!-- Data backup tools -->
+            <div class="data-tools">
+                <button id="export-data-btn" type="button">Export Data</button>
+                <button id="import-data-btn" type="button" class="reset-btn">Import Data</button>
+                <input id="import-data-input" type="file" accept="application/json" style="display:none" />
+            </div>
+            <p class="data-tools-note">
+                Export creates a backup JSON file. Import restores it (useful when switching to Live Server).
+            </p>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
