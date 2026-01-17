@@ -1,4 +1,4 @@
-let familyMembers = ["You", "Wife"]; // Default
+let familyMembers = []; // Default
 let incomes = {}; // Dynamic: { "Alex": 5000, "Sam": 2000, ... }
 let expenses = [];
 let goals = [];
@@ -184,8 +184,13 @@ function importAppDataFromFile(file) {
 
 function loadFamilyMembers() {
     const saved = localStorage.getItem('familyMembers');
-    if (saved) familyMembers = JSON.parse(saved);
-    if (!Array.isArray(familyMembers) || familyMembers.length === 0) familyMembers = ["You", "Wife"];
+    if (saved) {
+        familyMembers = JSON.parse(saved);
+    }
+
+    if (!Array.isArray(familyMembers)) {
+        familyMembers = [];
+    }
 }
 
 function saveFamilyMembers() {
@@ -444,7 +449,7 @@ function updateInvestmentChart(index, inv) {
     const { labels, contribLine, growthLine } = projectInvestmentSeries(inv);
 
     if (investmentCharts[index]) {
-        try { investmentCharts[index].destroy(); } catch (_) {}
+        try { investmentCharts[index].destroy(); } catch (_) { }
         delete investmentCharts[index];
     }
 
@@ -1562,7 +1567,7 @@ function updateDisplay() {
     const goalList = document.getElementById('goal-list');
 
     Object.values(goalCharts).forEach(ch => {
-        try { ch.destroy(); } catch (_) {}
+        try { ch.destroy(); } catch (_) { }
     });
     goalCharts = {};
 
@@ -1778,7 +1783,7 @@ function updateDisplay() {
         }
     });
 
-    
+
     // ────────────────────────────────────────────────────
     // Investments list
     // ────────────────────────────────────────────────────
@@ -1786,7 +1791,7 @@ function updateDisplay() {
 
     // destroy old charts
     Object.values(investmentCharts).forEach(ch => {
-        try { ch.destroy(); } catch (_) {}
+        try { ch.destroy(); } catch (_) { }
     });
     investmentCharts = {};
 
