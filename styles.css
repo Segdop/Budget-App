@@ -14,10 +14,11 @@ body {
     background: white;
     padding: 25px;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-h1, h2 {
+h1,
+h2 {
     text-align: center;
     color: #333;
 }
@@ -28,7 +29,9 @@ section {
 
 /* ================= FORM ELEMENTS ================= */
 
-label, input, select {
+label,
+input,
+select {
     display: block;
     margin: 10px 0;
     padding: 8px;
@@ -91,7 +94,8 @@ table {
     margin: 15px 0;
 }
 
-th, td {
+th,
+td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
@@ -118,14 +122,26 @@ th {
     border-radius: 4px;
 }
 
-.save-btn    { background: #4CAF50; }
-.cancel-btn  { background: #777; }
-.edit-btn    { background: #2196F3; }
-.delete-btn  { background: #f44336; }
+.save-btn {
+    background: #4CAF50;
+}
+
+.cancel-btn {
+    background: #777;
+}
+
+.edit-btn {
+    background: #2196F3;
+}
+
+.delete-btn {
+    background: #f44336;
+}
 
 .reset-btn {
     background: #ff9800;
 }
+
 .reset-btn:hover {
     background: #fb8c00;
 }
@@ -243,6 +259,30 @@ ul li {
     margin: 6px 0;
 }
 
+/* ADD THIS BLOCK RIGHT HERE ↓↓↓ */
+.goal-alloc-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.goal-alloc-controls label {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+
+.goal-alloc-controls select,
+.goal-alloc-controls input {
+    min-width: 220px;
+    max-width: 280px;
+    /* optional: keeps them from getting huge */
+}
+
+/* ADD THIS BLOCK RIGHT HERE ↑↑↑ */
+
 .investment-disclaimer {
     font-size: 0.85rem;
     color: #777;
@@ -353,7 +393,9 @@ tr.highlight td {
 /* ================= RESPONSIVE ================= */
 
 @media (max-width: 600px) {
-    input, select {
+
+    input,
+    select {
         max-width: 100%;
     }
 }
